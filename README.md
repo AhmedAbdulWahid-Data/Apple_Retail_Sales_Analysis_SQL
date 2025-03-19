@@ -185,7 +185,8 @@ WITH YearlySales AS (
 )
 SELECT store_id, year, total_units_sold,
        LAG(total_units_sold) OVER (PARTITION BY store_id ORDER BY year) AS previous_year_sales,
-       (total_units_sold - LAG(total_units_sold) OVER (PARTITION BY store_id ORDER BY year)) * 100.0 / LAG(total_units_sold) OVER (PARTITION BY store_id ORDER BY year) AS growth_percentage
+       (total_units_sold - LAG(total_units_sold) OVER (PARTITION BY store_id ORDER BY year)) * 100.0
+        / LAG(total_units_sold) OVER (PARTITION BY store_id ORDER BY year) AS growth_percentage
 FROM YearlySales;
 ```
 
@@ -212,7 +213,8 @@ GROUP BY price_range;
 ### 19. Identify the store with the highest percentage of "Paid Repaired" claims relative to total claims filed.
 ```sql
 SELECT store_id, 
-       (COUNT(CASE WHEN claim_status = 'Paid Repaired' THEN 1 END) * 100.0 / COUNT(*)) AS repair_percentage
+       (COUNT(CASE WHEN claim_status = 'Paid Repaired' THEN 1 END) * 100.0
+       / COUNT(*)) AS repair_percentage
 FROM warranty_claims
 GROUP BY store_id
 ORDER BY repair_percentage DESC
@@ -222,7 +224,8 @@ LIMIT 1;
 ### 20. Write a query to calculate the monthly running total of sales for each store over the past four years and compare trends during this period.
 ```sql
 SELECT store_id, YEAR(sale_date) AS year, MONTH(sale_date) AS month,
-       SUM(units_sold) OVER (PARTITION BY store_id ORDER BY YEAR(sale_date), MONTH(sale_date)) AS running_total
+       SUM(units_sold) OVER (PARTITION BY store_id ORDER BY YEAR(sale_date),
+       MONTH(sale_date)) AS running_total
 FROM sales
 WHERE sale_date >= DATE_SUB(CURDATE(), INTERVAL 4 YEAR);
 ```
@@ -245,3 +248,14 @@ SELECT sales_period, SUM(units_sold) AS total_units_sold
 FROM SalesPeriod
 GROUP BY sales_period;
 ```
+
+---
+## Project Focus
+
+### This project primarily focuses on developing and showcasing the following SQL skills:
+
+- **Complex Joins and Aggregations**: Demonstrating the ability to perform complex SQL joins and aggregate data meaningfully.
+- **Window Functions**: Using advanced window functions for running totals, growth analysis, and time-based queries.
+- **Data Segmentation**: Analyzing data across different time frames to gain insights into product performance.
+- **Correlation Analysis**: Applying SQL functions to determine relationships between variables, such as product price and warranty claims.
+- **Real-World Problem Solving**: Answering business-related questions that reflect real-world scenarios faced by data analysts.
